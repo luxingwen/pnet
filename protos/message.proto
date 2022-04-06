@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package protos;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "protos/node.proto";
+
+option (gogoproto.gostring_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// For tests
+option (gogoproto.testgen_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.populate_all) = true;
+
+enum RoutingType {
+  DIRECT = 0;
+  RELAY = 1;
+  BROADCAST_PUSH = 2;
+  BROADCAST_PULL = 3; // to be implemented
+  BROADCAST_TREE = 4;
+}
+
+enum MessageType {
+  // Node message
+  PING = 0;
+  EXCHANGE_NODE = 1;
+  STOP = 2;
+  // Message that contains any bytes
+  BYTES = 3;
+}
+
+message Message {
+  RoutingType     routing_type    = 1;
+  MessageType     message_type    = 2;
+  bytes           message         = 3;
+  bytes           message_id      = 4;
+  bytes           reply_to_id     = 5;
+  string          src_id          = 6; // 源地址
+  string          dest_id         = 7; // 目标地址
+  string          path            = 8; // 路由路径
+  repeated string broadcast_nodes = 9; // 已经广播节点
+
+}
+
+message Ping {
+}
+
+message PingReply {
+}
+
+
+message Bytes {
+  bytes data = 1;
+}
+
+
+
+message ExchangeNode {
+  Node node = 1;
+}
+
+message ExchangeNodeReply {
+  Node node = 1;
+}
+
+message Stop {
+}
