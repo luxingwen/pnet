@@ -255,12 +255,14 @@ NEXT_MESSAGE:
 
 			for _, routingType := range rn.LocalNode.LocalRxMsgCacheRoutingType {
 				if routingType == msg.RoutingType {
+
 					added, err = rn.LocalNode.AddToRxCache(msg.MessageId)
 					if err != nil {
 						log.Errorf("Add msg id %x to rx cache error: %v", msg.MessageId, err)
 						continue NEXT_MESSAGE
 					}
 					if !added {
+						fmt.Println("added: ", added, "msgid : ", string(msg.MessageId), "routingType:", routingType)
 						continue NEXT_MESSAGE
 					}
 				}

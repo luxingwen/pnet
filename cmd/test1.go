@@ -47,12 +47,12 @@ func newPnet(id string, name string, port uint16) *pnet.PNet {
 func main() {
 	hostname := "127.0.0.1"
 
-	p1 := newPnet("p1", hostname, 50001)
-	p2 := newPnet("p2", hostname, 50002)
-	p3 := newPnet("p3", hostname, 50003)
-	p4 := newPnet("p4", hostname, 50004)
-	p5 := newPnet("p5", hostname, 50005)
-	p6 := newPnet("p6", hostname, 50006)
+	p1 := newPnet("p1", hostname, 40001)
+	p2 := newPnet("p2", hostname, 40002)
+	p3 := newPnet("p3", hostname, 40003)
+	p4 := newPnet("p4", hostname, 40004)
+	p5 := newPnet("p5", hostname, 40005)
+	p6 := newPnet("p6", hostname, 40006)
 
 	p2.Join(p1.GetLocalNode().Addr)
 	p3.Join(p2.GetLocalNode().Addr)
@@ -74,9 +74,24 @@ func main() {
 	r, srcid, err := p1.SendBytesRelaySync([]byte("p1 send->p6"), p6.GetLocalNode().GetId())
 	if err != nil {
 		log.Error("p1 send p6 err:", err)
-		return
+
+	} else {
+		log.Debugf("get res: %s  srcid:%s", string(r), srcid)
 	}
-	log.Debugf("get res: %s  srcid:%s", string(r), srcid)
+
+	ok, err := p3.SendBytesRelayAsync([]byte("p3 send->p7"), "p7")
+	if err != nil {
+		log.Error("p3 send p7 err:", err)
+	}
+	log.Info("ok:", ok)
+
+	r, srcid, err = p4.SendBytesRelaySync([]byte("p4 send->p7"), "p7")
+	if err != nil {
+		log.Error("p4 send p7 err:", err)
+
+	} else {
+		log.Debugf("p4 get res: %s  srcid:%s", string(r), srcid)
+	}
 
 	select {}
 

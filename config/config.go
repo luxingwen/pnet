@@ -25,7 +25,8 @@ type Config struct {
 	LocalRxMsgChanLen              uint32
 	LocalHandleMsgChanLen          uint32
 
-	LocalRxMsgCacheRoutingType []protos.RoutingType
+	LocalRxMsgCacheRoutingType     []protos.RoutingType
+	LocalReciveMsgCacheRoutingType []protos.RoutingType
 
 	MaxMessageSize           uint32
 	DefaultReplyTimeout      time.Duration
@@ -47,11 +48,12 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	return &Config{
-		Transport:           "tcp",
-		SupportedTransports: []transport.Transport{transport.NewTCPTransport()},
-		Multiplexer:         "smux",
-		NumStreamsToOpen:    8,
-		NumStreamsToAccept:  32,
+		Transport:                      "tcp",
+		SupportedTransports:            []transport.Transport{transport.NewTCPTransport()},
+		LocalReciveMsgCacheRoutingType: []protos.RoutingType{protos.RELAY},
+		Multiplexer:                    "smux",
+		NumStreamsToOpen:               8,
+		NumStreamsToAccept:             32,
 
 		LocalRxMsgChanLen:     23333,
 		LocalHandleMsgWorkers: 1,
