@@ -1,4 +1,4 @@
-module pnet
+module github.com/luxingwen/pnet
 
 go 1.16
 
