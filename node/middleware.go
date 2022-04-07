@@ -2,9 +2,10 @@ package node
 
 import (
 	"errors"
-	"pnet/protos"
 
-	"pnet/middleware"
+	"github.com/luxingwen/pnet/protos"
+
+	"github.com/luxingwen/pnet/middleware"
 )
 
 type BytesReceived struct {

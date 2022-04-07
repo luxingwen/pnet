@@ -4,15 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"pnet/cache"
-	"pnet/config"
-	"pnet/protos"
-	"pnet/transport"
 	"strconv"
 	"sync"
 	"time"
 
-	"pnet/log"
+	"github.com/luxingwen/pnet/cache"
+	"github.com/luxingwen/pnet/config"
+	"github.com/luxingwen/pnet/protos"
+	"github.com/luxingwen/pnet/transport"
+
+	"github.com/luxingwen/pnet/log"
 )
 
 type LocalNode struct {

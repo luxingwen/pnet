@@ -2,12 +2,13 @@ package routing
 
 import (
 	"errors"
-	"pnet/common"
-	"pnet/log"
-	"pnet/node"
-	"pnet/utils"
 	"strings"
 	"time"
+
+	"github.com/luxingwen/pnet/common"
+	"github.com/luxingwen/pnet/log"
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/utils"
 )
 
 type Router interface {

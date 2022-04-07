@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"pnet/config"
-	"pnet/node"
 	"time"
+
+	"github.com/luxingwen/pnet/config"
+	"github.com/luxingwen/pnet/node"
 )
 
 func main() {

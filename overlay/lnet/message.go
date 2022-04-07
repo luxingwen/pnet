@@ -2,8 +2,9 @@ package lnet
 
 import (
 	"fmt"
-	"pnet/log"
-	"pnet/node"
+
+	"github.com/luxingwen/pnet/log"
+	"github.com/luxingwen/pnet/node"
 )
 
 func (ln *LNet) handleRemoteMessage(remoteMsg *node.RemoteMessage) (bool, error) {

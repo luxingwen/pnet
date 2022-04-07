@@ -1,11 +1,11 @@
 package pnet
 
 import (
-	"pnet/config"
-	"pnet/log"
-	"pnet/node"
-	"pnet/overlay"
-	"pnet/overlay/lnet"
+	"github.com/luxingwen/pnet/config"
+	"github.com/luxingwen/pnet/log"
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/overlay"
+	"github.com/luxingwen/pnet/overlay/lnet"
 
 	"github.com/google/uuid"
 )

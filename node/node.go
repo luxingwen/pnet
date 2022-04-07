@@ -2,9 +2,10 @@ package node
 
 import (
 	"fmt"
-	"pnet/common"
-	"pnet/protos"
 	"sync"
+
+	"github.com/luxingwen/pnet/common"
+	"github.com/luxingwen/pnet/protos"
 )
 
 type Node struct {

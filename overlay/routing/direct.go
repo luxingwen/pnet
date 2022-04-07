@@ -2,7 +2,8 @@ package routing
 
 import (
 	"errors"
-	"pnet/node"
+
+	"github.com/luxingwen/pnet/node"
 )
 
 const (

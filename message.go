@@ -1,10 +1,11 @@
 package pnet
 
 import (
-	"pnet/node"
-	"pnet/protos"
-	"pnet/utils"
 	"time"
+
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/protos"
+	"github.com/luxingwen/pnet/utils"
 
 	"github.com/gogo/protobuf/proto"
 )

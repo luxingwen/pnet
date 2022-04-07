@@ -2,8 +2,9 @@ package routing
 
 import (
 	"errors"
-	"pnet/middleware"
-	"pnet/node"
+
+	"github.com/luxingwen/pnet/middleware"
+	"github.com/luxingwen/pnet/node"
 )
 
 type RemoteMessageArrived struct {

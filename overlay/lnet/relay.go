@@ -1,9 +1,10 @@
 package lnet
 
 import (
-	"pnet/node"
-	"pnet/overlay/routing"
 	"strings"
+
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/overlay/routing"
 )
 
 const (

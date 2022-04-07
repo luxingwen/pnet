@@ -5,16 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"pnet/cache"
-	"pnet/protos"
-	"pnet/transport"
-	"pnet/utils"
 	"sync"
 	"time"
 
-	"pnet/log"
+	"github.com/luxingwen/pnet/cache"
+	"github.com/luxingwen/pnet/protos"
+	"github.com/luxingwen/pnet/transport"
+	"github.com/luxingwen/pnet/utils"
 
-	"pnet/multiplexer"
+	"github.com/luxingwen/pnet/log"
+
+	"github.com/luxingwen/pnet/multiplexer"
 
 	"github.com/gogo/protobuf/proto"
 )

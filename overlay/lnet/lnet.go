@@ -1,12 +1,12 @@
 package lnet
 
 import (
-	"pnet/log"
-	"pnet/overlay"
-	"pnet/overlay/routing"
-	"pnet/protos"
+	"github.com/luxingwen/pnet/log"
+	"github.com/luxingwen/pnet/overlay"
+	"github.com/luxingwen/pnet/overlay/routing"
+	"github.com/luxingwen/pnet/protos"
 
-	"pnet/node"
+	"github.com/luxingwen/pnet/node"
 )
 
 const (

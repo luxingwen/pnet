@@ -3,11 +3,12 @@ package overlay
 import (
 	"errors"
 	"fmt"
-	"pnet/common"
-	"pnet/node"
-	"pnet/overlay/routing"
-	"pnet/protos"
 	"time"
+
+	"github.com/luxingwen/pnet/common"
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/overlay/routing"
+	"github.com/luxingwen/pnet/protos"
 )
 
 type Overlay struct {

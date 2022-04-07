@@ -1,9 +1,10 @@
 package config
 
 import (
-	"pnet/protos"
-	"pnet/transport"
 	"time"
+
+	"github.com/luxingwen/pnet/protos"
+	"github.com/luxingwen/pnet/transport"
 
 	"github.com/imdario/mergo"
 )

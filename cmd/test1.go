@@ -1,11 +1,13 @@
 package main
 
 import (
-	"pnet"
-	"pnet/config"
-	"pnet/log"
-	"pnet/node"
 	"time"
+
+	"github.com/luxingwen/pnet"
+
+	"github.com/luxingwen/pnet/config"
+	"github.com/luxingwen/pnet/log"
+	"github.com/luxingwen/pnet/node"
 )
 
 func newPnet(id string, name string, port uint16) *pnet.PNet {

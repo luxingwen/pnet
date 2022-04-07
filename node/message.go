@@ -2,9 +2,10 @@ package node
 
 import (
 	"errors"
-	"pnet/protos"
 
-	"pnet/log"
+	"github.com/luxingwen/pnet/protos"
+
+	"github.com/luxingwen/pnet/log"
 
 	"github.com/gogo/protobuf/proto"
 

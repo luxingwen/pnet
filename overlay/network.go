@@ -1,10 +1,11 @@
 package overlay
 
 import (
-	"pnet/node"
-	"pnet/overlay/routing"
-	"pnet/protos"
 	"time"
+
+	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/overlay/routing"
+	"github.com/luxingwen/pnet/protos"
 )
 
 type Network interface {

@@ -1,6 +1,6 @@
 package pnet
 
-import "pnet/utils"
+import "github.com/luxingwen/pnet/utils"
 
 func (nn *PNet) ApplyMiddleware(mw interface{}) error {
 	applied := false
