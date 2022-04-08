@@ -251,7 +251,6 @@ func (ln *LocalNode) StartRemoteNode(conn net.Conn, isOutbound bool, n *protos.N
 func (ln *LocalNode) AddToRxCache(msgID []byte) (bool, error) {
 	_, found := ln.rxMsgCache.Get(msgID)
 	if found {
-		//fmt.Println("----1111 :", string(msgID), "found:", found, " v:", v)
 		return false, nil
 	}
 

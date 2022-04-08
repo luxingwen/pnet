@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/luxingwen/pnet"
 
 	"github.com/luxingwen/pnet/config"
 	"github.com/luxingwen/pnet/log"
 	"github.com/luxingwen/pnet/node"
+	"github.com/luxingwen/pnet/protos"
 )
 
 func newPnet(id string, name string, port uint16) *pnet.PNet {
@@ -93,6 +96,84 @@ func main() {
 
 	} else {
 		log.Debugf("p4 get res: %s  srcid:%s", string(r), srcid)
+	}
+
+	msg := p2.GetLocalNode().NewGetNeighborsMessage(p5.GetLocalNode().Id)
+
+	relay, _, err := p2.SendMessageSync(msg, protos.RELAY, time.Second*10)
+	if err != nil {
+		log.Error("p2 send p5 err:", err)
+		return
+	}
+
+	nodes := &protos.Neighbors{}
+
+	err = proto.Unmarshal(relay.Message, nodes)
+	if err != nil {
+		log.Error("unmarshal err:", err)
+		return
+	}
+
+	for _, item := range nodes.Nodes {
+		fmt.Println(item.Addr, item.Name, item.Id)
+	}
+
+	msg, _ = p2.GetLocalNode().NewConnnetNodeMessage(p5.GetLocalNode().Id, p1.GetLocalNode().Node.Node)
+
+	relay, _, err = p2.SendMessageSync(msg, protos.RELAY, time.Second*10)
+	if err != nil {
+		log.Error("p2 send p5 err:", err)
+		return
+	}
+	fmt.Println("connect :", string(relay.Message))
+
+	msg = p2.GetLocalNode().NewGetNeighborsMessage(p5.GetLocalNode().Id)
+
+	relay, _, err = p2.SendMessageSync(msg, protos.RELAY, time.Second*10)
+	if err != nil {
+		log.Error("p2 send p5 err:", err)
+		return
+	}
+
+	nodes1 := &protos.Neighbors{}
+
+	err = proto.Unmarshal(relay.Message, nodes1)
+	if err != nil {
+		log.Error("unmarshal err:", err)
+		return
+	}
+
+	for _, item := range nodes1.Nodes {
+		fmt.Println(item.Addr, item.Name, item.Id)
+	}
+
+	msg, _ = p2.GetLocalNode().NewStopConnnetNodeMessage(p5.GetLocalNode().Id, p6.GetLocalNode().Node.Node)
+
+	relay, _, err = p2.SendMessageSync(msg, protos.RELAY, time.Second*10)
+	if err != nil {
+		log.Error("p2 send p5 err:", err)
+		return
+	}
+	fmt.Println("stop connect :", string(relay.Message))
+
+	msg = p2.GetLocalNode().NewGetNeighborsMessage(p5.GetLocalNode().Id)
+
+	relay, _, err = p2.SendMessageSync(msg, protos.RELAY, time.Second*10)
+	if err != nil {
+		log.Error("p2 send p5 err:", err)
+		return
+	}
+
+	nodes2 := &protos.Neighbors{}
+
+	err = proto.Unmarshal(relay.Message, nodes2)
+	if err != nil {
+		log.Error("unmarshal err:", err)
+		return
+	}
+
+	for _, item := range nodes2.Nodes {
+		fmt.Println(item.Addr, item.Name, item.Id)
 	}
 
 	select {}

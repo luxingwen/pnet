@@ -101,10 +101,21 @@ func (r *Routing) SendMessage(router Router, remoteMsg *node.RemoteMessage, hasR
 		}
 		remoteMsg.Msg.Path += r.LocalNode.Id
 	}
-	remoteMsg.Msg.BroadcastNodes = append(remoteMsg.Msg.BroadcastNodes, r.LocalNode.Id)
+
+	mbrocast := make(map[string]string, 0)
+
+	for _, item := range remoteMsg.Msg.BroadcastNodes {
+		mbrocast[item] = item
+	}
+
+	if _, ok := mbrocast[r.LocalNode.Id]; !ok {
+		remoteMsg.Msg.BroadcastNodes = append(remoteMsg.Msg.BroadcastNodes, r.LocalNode.Id)
+	}
 
 	for _, remoteNode := range remoteNodes {
-		remoteMsg.Msg.BroadcastNodes = append(remoteMsg.Msg.BroadcastNodes, remoteNode.Id)
+		if _, ok := mbrocast[r.LocalNode.Id]; !ok {
+			remoteMsg.Msg.BroadcastNodes = append(remoteMsg.Msg.BroadcastNodes, remoteNode.Id)
+		}
 	}
 
 	for _, remoteNode := range remoteNodes {
@@ -143,13 +154,27 @@ func (r *Routing) sendMessageToLocalNode(remoteMsg *node.RemoteMessage, localNod
 		return nil
 	}
 
+	for _, routingType := range r.LocalNode.LocalReciveMsgCacheRoutingType {
+		if routingType == remoteMsg.Msg.RoutingType {
+			added, err := r.LocalNode.AddToRxCache(remoteMsg.Msg.MessageId)
+			if err != nil {
+				log.Errorf("Add msg id %x to rx cache error: %v", remoteMsg.Msg.MessageId, err)
+				return nil
+			}
+			if !added {
+				return nil
+			}
+		}
+	}
+
 	if len(remoteMsg.Msg.ReplyToId) > 0 {
+
 		replyChan, ok := localNode.GetReplyChan(remoteMsg.Msg.ReplyToId)
 		if ok && replyChan != nil {
 			select {
 			case replyChan <- remoteMsg:
 			default:
-				log.Warning("Reply chan unavailable or full, discarding msg")
+				log.Warning("Reply chan unavailable or full, discarding msg, node id:", r.LocalNode.GetId(), " len(replyChan): ", len(replyChan), " cap(replyChan):", cap(replyChan), " message type:", remoteMsg.Msg.MessageType.String(), "msg:", string(remoteMsg.Msg.Message), "replay id:", string(remoteMsg.Msg.ReplyToId))
 			}
 		}
 		return nil
@@ -189,7 +214,8 @@ func (r *Routing) handleMsg(router Router) {
 
 		_, _, err = r.SendMessage(router, remoteMsg, false, 0)
 		if err != nil {
-			log.Warningf("Route message error: %v", err)
+			log.Warningf("%s Route message error: %v, srcid:%s, descid:%s,  path:%s, broadcasts:%v", r.LocalNode.GetId(), err, remoteMsg.Msg.SrcId, remoteMsg.Msg.DestId,
+				remoteMsg.Msg.Path, remoteMsg.Msg.BroadcastNodes)
 		}
 	}
 }

@@ -71,10 +71,10 @@ func DefaultConfig() *Config {
 		RemoteTxMsgCacheCleanupInterval: 10 * time.Second,
 
 		MaxMessageSize:               20 * 1024 * 1024,
-		DefaultReplyTimeout:          5 * time.Second,
+		DefaultReplyTimeout:          10 * time.Second,
 		ReplyChanCleanupInterval:     1 * time.Second,
 		MeasureRoundTripTimeInterval: 5 * time.Second,
-		KeepAliveTimeout:             20 * time.Second,
+		KeepAliveTimeout:             50 * time.Second,
 		DialTimeout:                  5 * time.Second,
 	}
 }

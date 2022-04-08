@@ -32,6 +32,13 @@ enum MessageType {
   STOP = 2;
   // Message that contains any bytes
   BYTES = 3;
+
+  GET_NEIGHBORS = 4;  // 获取邻边节点信息
+  
+  CONNECT_NODE = 6; // 连接到远程节点
+
+  STOP_REMOTENODE = 7;
+
 }
 
 message Message {
@@ -68,5 +75,20 @@ message ExchangeNodeReply {
   Node node = 1;
 }
 
+
+
+
 message Stop {
+}
+
+message Neighbors {
+  repeated Node nodes = 1;
+}
+
+message StopRemoteNode {
+  Node node = 1;
+}
+
+message ConnectNode {
+  Node node =1;
 }

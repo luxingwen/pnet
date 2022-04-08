@@ -65,7 +65,10 @@ const (
 	EXCHANGE_NODE MessageType = 1
 	STOP          MessageType = 2
 	// Message that contains any bytes
-	BYTES MessageType = 3
+	BYTES           MessageType = 3
+	GET_NEIGHBORS   MessageType = 4
+	CONNECT_NODE    MessageType = 6
+	STOP_REMOTENODE MessageType = 7
 )
 
 var MessageType_name = map[int32]string{
@@ -73,13 +76,19 @@ var MessageType_name = map[int32]string{
 	1: "EXCHANGE_NODE",
 	2: "STOP",
 	3: "BYTES",
+	4: "GET_NEIGHBORS",
+	6: "CONNECT_NODE",
+	7: "STOP_REMOTENODE",
 }
 
 var MessageType_value = map[string]int32{
-	"PING":          0,
-	"EXCHANGE_NODE": 1,
-	"STOP":          2,
-	"BYTES":         3,
+	"PING":            0,
+	"EXCHANGE_NODE":   1,
+	"STOP":            2,
+	"BYTES":           3,
+	"GET_NEIGHBORS":   4,
+	"CONNECT_NODE":    6,
+	"STOP_REMOTENODE": 7,
 }
 
 func (MessageType) EnumDescriptor() ([]byte, []int) {
@@ -427,6 +436,135 @@ func (m *Stop) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Stop proto.InternalMessageInfo
 
+type Neighbors struct {
+	Nodes []*Node `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty"`
+}
+
+func (m *Neighbors) Reset()      { *m = Neighbors{} }
+func (*Neighbors) ProtoMessage() {}
+func (*Neighbors) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c2c716e67c403b1b, []int{7}
+}
+func (m *Neighbors) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Neighbors) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Neighbors.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Neighbors) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Neighbors.Merge(m, src)
+}
+func (m *Neighbors) XXX_Size() int {
+	return m.Size()
+}
+func (m *Neighbors) XXX_DiscardUnknown() {
+	xxx_messageInfo_Neighbors.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Neighbors proto.InternalMessageInfo
+
+func (m *Neighbors) GetNodes() []*Node {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+type StopRemoteNode struct {
+	Node *Node `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+}
+
+func (m *StopRemoteNode) Reset()      { *m = StopRemoteNode{} }
+func (*StopRemoteNode) ProtoMessage() {}
+func (*StopRemoteNode) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c2c716e67c403b1b, []int{8}
+}
+func (m *StopRemoteNode) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *StopRemoteNode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_StopRemoteNode.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *StopRemoteNode) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopRemoteNode.Merge(m, src)
+}
+func (m *StopRemoteNode) XXX_Size() int {
+	return m.Size()
+}
+func (m *StopRemoteNode) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopRemoteNode.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopRemoteNode proto.InternalMessageInfo
+
+func (m *StopRemoteNode) GetNode() *Node {
+	if m != nil {
+		return m.Node
+	}
+	return nil
+}
+
+type ConnectNode struct {
+	Node *Node `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+}
+
+func (m *ConnectNode) Reset()      { *m = ConnectNode{} }
+func (*ConnectNode) ProtoMessage() {}
+func (*ConnectNode) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c2c716e67c403b1b, []int{9}
+}
+func (m *ConnectNode) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConnectNode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConnectNode.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConnectNode) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConnectNode.Merge(m, src)
+}
+func (m *ConnectNode) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConnectNode) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConnectNode.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConnectNode proto.InternalMessageInfo
+
+func (m *ConnectNode) GetNode() *Node {
+	if m != nil {
+		return m.Node
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterEnum("protos.RoutingType", RoutingType_name, RoutingType_value)
 	proto.RegisterEnum("protos.MessageType", MessageType_name, MessageType_value)
@@ -437,46 +575,54 @@ func init() {
 	proto.RegisterType((*ExchangeNode)(nil), "protos.ExchangeNode")
 	proto.RegisterType((*ExchangeNodeReply)(nil), "protos.ExchangeNodeReply")
 	proto.RegisterType((*Stop)(nil), "protos.Stop")
+	proto.RegisterType((*Neighbors)(nil), "protos.Neighbors")
+	proto.RegisterType((*StopRemoteNode)(nil), "protos.StopRemoteNode")
+	proto.RegisterType((*ConnectNode)(nil), "protos.ConnectNode")
 }
 
 func init() { proto.RegisterFile("protos/message.proto", fileDescriptor_c2c716e67c403b1b) }
 
 var fileDescriptor_c2c716e67c403b1b = []byte{
-	// 529 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x4f, 0x8f, 0xd2, 0x40,
-	0x18, 0xc6, 0x3b, 0x50, 0xca, 0xf6, 0x2d, 0xae, 0x65, 0xd4, 0xd8, 0xac, 0x71, 0x42, 0x7a, 0x91,
-	0x6c, 0x22, 0x98, 0x35, 0x7a, 0x32, 0x31, 0xfc, 0x69, 0x76, 0x9b, 0x20, 0x90, 0xa1, 0x26, 0xee,
-	0x09, 0x0b, 0xad, 0x85, 0x44, 0x68, 0xd3, 0x0e, 0x89, 0xdc, 0xfc, 0x08, 0x7e, 0x0c, 0x3f, 0x82,
-	0x37, 0xaf, 0x1e, 0x39, 0xee, 0x51, 0xca, 0xc5, 0xe3, 0x1e, 0x3d, 0x9a, 0x99, 0x16, 0x97, 0xf5,
-	0xe4, 0xa9, 0xf3, 0xfc, 0x9e, 0x79, 0x9e, 0x99, 0xbc, 0x93, 0xc2, 0xfd, 0x28, 0x0e, 0x59, 0x98,
-	0x34, 0x17, 0x7e, 0x92, 0xb8, 0x81, 0xdf, 0x10, 0x12, 0x2b, 0x19, 0x3d, 0x79, 0x1a, 0xcc, 0xd9,
-	0x6c, 0x35, 0x69, 0x4c, 0xc3, 0x45, 0x33, 0x08, 0x83, 0xb0, 0x29, 0xf8, 0x64, 0xf5, 0x41, 0x28,
-	0x21, 0xc4, 0x2a, 0x8b, 0x9d, 0x54, 0xf3, 0xb2, 0x65, 0xe8, 0xe5, 0x4d, 0xe6, 0xf7, 0x02, 0x94,
-	0xdf, 0x64, 0xdd, 0xf8, 0x25, 0x54, 0xe2, 0x70, 0xc5, 0xe6, 0xcb, 0x60, 0xcc, 0xd6, 0x91, 0x6f,
-	0xa0, 0x1a, 0xaa, 0x1f, 0x9f, 0xdd, 0xcb, 0x76, 0x26, 0x0d, 0x9a, 0x79, 0xce, 0x3a, 0xf2, 0xa9,
-	0x16, 0xdf, 0x08, 0x9e, 0xcb, 0xaf, 0x97, 0xe5, 0x0a, 0xb7, 0x73, 0x79, 0x7d, 0x96, 0x5b, 0xdc,
-	0x08, 0x6c, 0x40, 0x39, 0x97, 0x46, 0xb1, 0x86, 0xea, 0x15, 0xba, 0x97, 0xf8, 0x31, 0xc0, 0xbe,
-	0x71, 0xee, 0x19, 0xb2, 0x30, 0xd5, 0x9c, 0xd8, 0x1e, 0x26, 0xa0, 0xc5, 0x7e, 0xf4, 0x71, 0x3d,
-	0x66, 0x21, 0xf7, 0x4b, 0x99, 0x2f, 0x90, 0x13, 0xda, 0x1e, 0x7e, 0x00, 0x4a, 0x12, 0x4f, 0xb9,
-	0xa5, 0xd4, 0x50, 0x5d, 0xa5, 0xa5, 0x24, 0x9e, 0xda, 0x1e, 0x7e, 0x08, 0x65, 0xcf, 0x4f, 0x18,
-	0xe7, 0x65, 0xc1, 0x15, 0x2e, 0x6d, 0x0f, 0x63, 0x90, 0x23, 0x97, 0xcd, 0x8c, 0x23, 0x41, 0xc5,
-	0x1a, 0x3f, 0x81, 0xbb, 0x93, 0x38, 0x74, 0xbd, 0xa9, 0x9b, 0xb0, 0x31, 0x1f, 0x58, 0x62, 0xa8,
-	0xb5, 0x62, 0x5d, 0xa5, 0xc7, 0x7f, 0x71, 0x9f, 0x53, 0x53, 0x01, 0x79, 0x38, 0x5f, 0x06, 0xa6,
-	0x06, 0x2a, 0xff, 0x52, 0x7e, 0x0b, 0xf3, 0x11, 0x94, 0xda, 0x6b, 0xe6, 0x27, 0xbc, 0xda, 0x73,
-	0x99, 0x2b, 0x66, 0x59, 0xa1, 0x62, 0x6d, 0x3e, 0x83, 0x8a, 0xf5, 0x69, 0x3a, 0x73, 0x97, 0x81,
-	0xcf, 0x2b, 0x70, 0x0d, 0x64, 0x7e, 0x80, 0xd8, 0xa3, 0x9d, 0x55, 0xf6, 0x73, 0xe3, 0x1e, 0x15,
-	0x8e, 0xf9, 0x02, 0xaa, 0x87, 0x09, 0x71, 0xc6, 0x7f, 0xc4, 0x14, 0x90, 0x47, 0x2c, 0x8c, 0x4e,
-	0xdf, 0x83, 0x76, 0xf0, 0x78, 0x18, 0x40, 0xe9, 0xda, 0xd4, 0xea, 0x38, 0xba, 0x84, 0x55, 0x28,
-	0x51, 0xab, 0xd7, 0xba, 0xd4, 0x11, 0xc6, 0x70, 0xdc, 0xa6, 0x83, 0x56, 0xb7, 0xd3, 0x1a, 0x39,
-	0xe3, 0xe1, 0xdb, 0xd1, 0x85, 0x5e, 0xf8, 0x97, 0xf5, 0x7a, 0x7a, 0xf1, 0x36, 0x73, 0xa8, 0x65,
-	0xe9, 0xf2, 0xe9, 0x6b, 0xd0, 0x0e, 0x9e, 0x19, 0x1f, 0x81, 0x3c, 0xb4, 0xfb, 0xe7, 0xba, 0x84,
-	0xab, 0x70, 0xc7, 0x7a, 0xd7, 0xb9, 0x68, 0xf5, 0xcf, 0xad, 0x71, 0x7f, 0xd0, 0xb5, 0x74, 0xc4,
-	0xcd, 0x91, 0x33, 0x18, 0xea, 0x05, 0x7e, 0x78, 0xfb, 0xd2, 0xb1, 0x46, 0x7a, 0xb1, 0xfd, 0x6a,
-	0xb3, 0x25, 0xd2, 0xd5, 0x96, 0x48, 0xd7, 0x5b, 0x82, 0x7e, 0x6f, 0x09, 0xfa, 0x9c, 0x12, 0xf4,
-	0x35, 0x25, 0xe8, 0x5b, 0x4a, 0xd0, 0x8f, 0x94, 0xa0, 0x4d, 0x4a, 0xd0, 0xcf, 0x94, 0xa0, 0x5f,
-	0x29, 0x91, 0xae, 0x53, 0x82, 0xbe, 0xec, 0x88, 0xb4, 0xd9, 0x11, 0xe9, 0x6a, 0x47, 0xa4, 0x49,
-	0xf6, 0x3f, 0x3c, 0xff, 0x13, 0x00, 0x00, 0xff, 0xff, 0xa0, 0x4c, 0x8c, 0x0f, 0x2e, 0x03, 0x00,
-	0x00,
+	// 612 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x31, 0x6f, 0xda, 0x4c,
+	0x1c, 0xc6, 0x7d, 0x60, 0x4c, 0xfc, 0x37, 0x2f, 0x71, 0x2e, 0xef, 0xab, 0x17, 0xa5, 0xea, 0x09,
+	0x79, 0x29, 0x8a, 0xd4, 0x50, 0xa5, 0x6a, 0xa7, 0x2e, 0x40, 0x4e, 0xc4, 0x52, 0x62, 0xd0, 0xe1,
+	0x4a, 0xcd, 0xe4, 0x1a, 0xec, 0x1a, 0xa4, 0xc2, 0x21, 0xfb, 0x22, 0x95, 0xad, 0x1f, 0xa1, 0x1f,
+	0xa3, 0x1f, 0xa1, 0x5b, 0xd7, 0x8e, 0x19, 0x33, 0x16, 0x67, 0xe9, 0x98, 0xb1, 0x63, 0x75, 0x67,
+	0xd2, 0x24, 0xed, 0x92, 0x89, 0x7b, 0x9e, 0xe7, 0x7e, 0xcf, 0x1d, 0x7f, 0x9d, 0xe1, 0xdf, 0x65,
+	0xca, 0x05, 0xcf, 0xda, 0xf3, 0x38, 0xcb, 0xc2, 0x24, 0x3e, 0x50, 0x12, 0x1b, 0x85, 0xbb, 0xf7,
+	0x34, 0x99, 0x89, 0xe9, 0xf9, 0xf8, 0x60, 0xc2, 0xe7, 0xed, 0x84, 0x27, 0xbc, 0xad, 0xfc, 0xf1,
+	0xf9, 0x3b, 0xa5, 0x94, 0x50, 0xab, 0x02, 0xdb, 0xdb, 0xd9, 0x94, 0x2d, 0x78, 0xb4, 0x69, 0x72,
+	0xbe, 0x96, 0xa0, 0x7a, 0x5a, 0x74, 0xe3, 0x97, 0x50, 0x4b, 0xf9, 0xb9, 0x98, 0x2d, 0x92, 0x40,
+	0xac, 0x96, 0x71, 0x03, 0x35, 0x51, 0xab, 0x7e, 0xb8, 0x5b, 0xec, 0xcc, 0x0e, 0x58, 0x91, 0xf9,
+	0xab, 0x65, 0xcc, 0xac, 0xf4, 0x56, 0x48, 0x6e, 0x73, 0xbd, 0x82, 0x2b, 0xdd, 0xe7, 0x36, 0xf5,
+	0x05, 0x37, 0xbf, 0x15, 0xb8, 0x01, 0xd5, 0x8d, 0x6c, 0x94, 0x9b, 0xa8, 0x55, 0x63, 0x37, 0x12,
+	0x3f, 0x06, 0xb8, 0x69, 0x9c, 0x45, 0x0d, 0x5d, 0x85, 0xe6, 0xc6, 0x71, 0x23, 0x4c, 0xc0, 0x4a,
+	0xe3, 0xe5, 0xfb, 0x55, 0x20, 0xb8, 0xcc, 0x2b, 0x45, 0xae, 0x2c, 0x9f, 0xbb, 0x11, 0xfe, 0x0f,
+	0x8c, 0x2c, 0x9d, 0xc8, 0xc8, 0x68, 0xa2, 0x96, 0xc9, 0x2a, 0x59, 0x3a, 0x71, 0x23, 0xfc, 0x3f,
+	0x54, 0xa3, 0x38, 0x13, 0xd2, 0xaf, 0x2a, 0xdf, 0x90, 0xd2, 0x8d, 0x30, 0x06, 0x7d, 0x19, 0x8a,
+	0x69, 0x63, 0x4b, 0xb9, 0x6a, 0x8d, 0x9f, 0xc0, 0xf6, 0x38, 0xe5, 0x61, 0x34, 0x09, 0x33, 0x11,
+	0xc8, 0x81, 0x65, 0x0d, 0xb3, 0x59, 0x6e, 0x99, 0xac, 0xfe, 0xdb, 0xf6, 0xa4, 0xeb, 0x18, 0xa0,
+	0x0f, 0x67, 0x8b, 0xc4, 0xb1, 0xc0, 0x94, 0xbf, 0x4c, 0xde, 0xc2, 0x79, 0x04, 0x95, 0xee, 0x4a,
+	0xc4, 0x99, 0xac, 0x8e, 0x42, 0x11, 0xaa, 0x59, 0xd6, 0x98, 0x5a, 0x3b, 0xcf, 0xa0, 0x46, 0x3f,
+	0x4c, 0xa6, 0xe1, 0x22, 0x89, 0x65, 0x05, 0x6e, 0x82, 0x2e, 0x0f, 0x50, 0x7b, 0xac, 0xc3, 0xda,
+	0xcd, 0xdc, 0x64, 0xc6, 0x54, 0xe2, 0xbc, 0x80, 0x9d, 0xbb, 0x84, 0x3a, 0xe3, 0x01, 0x98, 0x01,
+	0xfa, 0x48, 0xf0, 0xa5, 0xd3, 0x06, 0xd3, 0x8b, 0x67, 0xc9, 0x74, 0xcc, 0xd3, 0x0c, 0x3b, 0x50,
+	0x29, 0xfe, 0x0e, 0x6a, 0x96, 0xff, 0xe2, 0x8a, 0xc8, 0x39, 0x84, 0xba, 0x04, 0x59, 0x3c, 0xe7,
+	0xe2, 0xa1, 0x77, 0x6c, 0x83, 0xd5, 0xe3, 0x8b, 0x45, 0x3c, 0x11, 0x0f, 0x03, 0xf6, 0xdf, 0x82,
+	0x75, 0xe7, 0x49, 0x61, 0x00, 0xe3, 0xc8, 0x65, 0xb4, 0xe7, 0xdb, 0x1a, 0x36, 0xa1, 0xc2, 0xe8,
+	0x49, 0xe7, 0xcc, 0x46, 0x18, 0x43, 0xbd, 0xcb, 0x06, 0x9d, 0xa3, 0x5e, 0x67, 0xe4, 0x07, 0xc3,
+	0xd7, 0xa3, 0x63, 0xbb, 0xf4, 0xa7, 0x77, 0x72, 0x62, 0x97, 0xef, 0x7b, 0x3e, 0xa3, 0xd4, 0xd6,
+	0xf7, 0x57, 0x60, 0xdd, 0x79, 0x7c, 0x78, 0x0b, 0xf4, 0xa1, 0xeb, 0xf5, 0x6d, 0x0d, 0xef, 0xc0,
+	0x3f, 0xf4, 0x4d, 0xef, 0xb8, 0xe3, 0xf5, 0x69, 0xe0, 0x0d, 0x8e, 0xa8, 0x8d, 0x64, 0x38, 0xf2,
+	0x07, 0x43, 0xbb, 0x24, 0x0f, 0xef, 0x9e, 0xf9, 0x74, 0x64, 0x97, 0xe5, 0xbe, 0x3e, 0xf5, 0x03,
+	0x8f, 0xba, 0xfd, 0xe3, 0xee, 0x80, 0x8d, 0x6c, 0x1d, 0xdb, 0x50, 0xeb, 0x0d, 0x3c, 0x8f, 0xf6,
+	0xfc, 0x82, 0x34, 0xf0, 0x2e, 0x6c, 0x4b, 0x32, 0x60, 0xf4, 0x74, 0xe0, 0x53, 0x65, 0x56, 0xbb,
+	0xaf, 0x2e, 0xd6, 0x44, 0xbb, 0x5c, 0x13, 0xed, 0x7a, 0x4d, 0xd0, 0xcf, 0x35, 0x41, 0x1f, 0x73,
+	0x82, 0x3e, 0xe7, 0x04, 0x7d, 0xc9, 0x09, 0xfa, 0x96, 0x13, 0x74, 0x91, 0x13, 0xf4, 0x3d, 0x27,
+	0xe8, 0x47, 0x4e, 0xb4, 0xeb, 0x9c, 0xa0, 0x4f, 0x57, 0x44, 0xbb, 0xb8, 0x22, 0xda, 0xe5, 0x15,
+	0xd1, 0xc6, 0xc5, 0xf7, 0xfd, 0xfc, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0x60, 0x9a, 0x74, 0x65,
+	0xfe, 0x03, 0x00, 0x00,
 }
 
 func (x RoutingType) String() string {
@@ -681,6 +827,83 @@ func (this *Stop) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *Neighbors) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Neighbors)
+	if !ok {
+		that2, ok := that.(Neighbors)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Nodes) != len(that1.Nodes) {
+		return false
+	}
+	for i := range this.Nodes {
+		if !this.Nodes[i].Equal(that1.Nodes[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *StopRemoteNode) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*StopRemoteNode)
+	if !ok {
+		that2, ok := that.(StopRemoteNode)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Node.Equal(that1.Node) {
+		return false
+	}
+	return true
+}
+func (this *ConnectNode) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConnectNode)
+	if !ok {
+		that2, ok := that.(ConnectNode)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Node.Equal(that1.Node) {
+		return false
+	}
+	return true
+}
 func (this *Message) GoString() string {
 	if this == nil {
 		return "nil"
@@ -757,6 +980,42 @@ func (this *Stop) GoString() string {
 	}
 	s := make([]string, 0, 4)
 	s = append(s, "&protos.Stop{")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Neighbors) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&protos.Neighbors{")
+	if this.Nodes != nil {
+		s = append(s, "Nodes: "+fmt.Sprintf("%#v", this.Nodes)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *StopRemoteNode) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&protos.StopRemoteNode{")
+	if this.Node != nil {
+		s = append(s, "Node: "+fmt.Sprintf("%#v", this.Node)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ConnectNode) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&protos.ConnectNode{")
+	if this.Node != nil {
+		s = append(s, "Node: "+fmt.Sprintf("%#v", this.Node)+",\n")
+	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1021,6 +1280,113 @@ func (m *Stop) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *Neighbors) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Neighbors) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Neighbors) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Nodes) > 0 {
+		for iNdEx := len(m.Nodes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Nodes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintMessage(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *StopRemoteNode) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *StopRemoteNode) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StopRemoteNode) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Node != nil {
+		{
+			size, err := m.Node.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ConnectNode) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConnectNode) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConnectNode) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Node != nil {
+		{
+			size, err := m.Node.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintMessage(dAtA []byte, offset int, v uint64) int {
 	offset -= sovMessage(v)
 	base := offset
@@ -1035,7 +1401,7 @@ func encodeVarintMessage(dAtA []byte, offset int, v uint64) int {
 func NewPopulatedMessage(r randyMessage, easy bool) *Message {
 	this := &Message{}
 	this.RoutingType = RoutingType([]int32{0, 1, 2, 3, 4}[r.Intn(5)])
-	this.MessageType = MessageType([]int32{0, 1, 2, 3}[r.Intn(4)])
+	this.MessageType = MessageType([]int32{0, 1, 2, 3, 4, 6, 7}[r.Intn(7)])
 	v1 := r.Intn(100)
 	this.Message = make([]byte, v1)
 	for i := 0; i < v1; i++ {
@@ -1117,6 +1483,40 @@ func NewPopulatedStop(r randyMessage, easy bool) *Stop {
 	return this
 }
 
+func NewPopulatedNeighbors(r randyMessage, easy bool) *Neighbors {
+	this := &Neighbors{}
+	if r.Intn(5) != 0 {
+		v6 := r.Intn(5)
+		this.Nodes = make([]*Node, v6)
+		for i := 0; i < v6; i++ {
+			this.Nodes[i] = NewPopulatedNode(r, easy)
+		}
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedStopRemoteNode(r randyMessage, easy bool) *StopRemoteNode {
+	this := &StopRemoteNode{}
+	if r.Intn(5) != 0 {
+		this.Node = NewPopulatedNode(r, easy)
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConnectNode(r randyMessage, easy bool) *ConnectNode {
+	this := &ConnectNode{}
+	if r.Intn(5) != 0 {
+		this.Node = NewPopulatedNode(r, easy)
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
 type randyMessage interface {
 	Float32() float32
 	Float64() float64
@@ -1136,9 +1536,9 @@ func randUTF8RuneMessage(r randyMessage) rune {
 	return rune(ru + 61)
 }
 func randStringMessage(r randyMessage) string {
-	v6 := r.Intn(100)
-	tmps := make([]rune, v6)
-	for i := 0; i < v6; i++ {
+	v7 := r.Intn(100)
+	tmps := make([]rune, v7)
+	for i := 0; i < v7; i++ {
 		tmps[i] = randUTF8RuneMessage(r)
 	}
 	return string(tmps)
@@ -1160,11 +1560,11 @@ func randFieldMessage(dAtA []byte, r randyMessage, fieldNumber int, wire int) []
 	switch wire {
 	case 0:
 		dAtA = encodeVarintPopulateMessage(dAtA, uint64(key))
-		v7 := r.Int63()
+		v8 := r.Int63()
 		if r.Intn(2) == 0 {
-			v7 *= -1
+			v8 *= -1
 		}
-		dAtA = encodeVarintPopulateMessage(dAtA, uint64(v7))
+		dAtA = encodeVarintPopulateMessage(dAtA, uint64(v8))
 	case 1:
 		dAtA = encodeVarintPopulateMessage(dAtA, uint64(key))
 		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
@@ -1300,6 +1700,47 @@ func (m *Stop) Size() (n int) {
 	return n
 }
 
+func (m *Neighbors) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Nodes) > 0 {
+		for _, e := range m.Nodes {
+			l = e.Size()
+			n += 1 + l + sovMessage(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *StopRemoteNode) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Node != nil {
+		l = m.Node.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	return n
+}
+
+func (m *ConnectNode) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Node != nil {
+		l = m.Node.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	return n
+}
+
 func sovMessage(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -1377,6 +1818,41 @@ func (this *Stop) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&Stop{`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Neighbors) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForNodes := "[]*Node{"
+	for _, f := range this.Nodes {
+		repeatedStringForNodes += strings.Replace(fmt.Sprintf("%v", f), "Node", "Node", 1) + ","
+	}
+	repeatedStringForNodes += "}"
+	s := strings.Join([]string{`&Neighbors{`,
+		`Nodes:` + repeatedStringForNodes + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *StopRemoteNode) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&StopRemoteNode{`,
+		`Node:` + strings.Replace(fmt.Sprintf("%v", this.Node), "Node", "Node", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ConnectNode) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ConnectNode{`,
+		`Node:` + strings.Replace(fmt.Sprintf("%v", this.Node), "Node", "Node", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2092,6 +2568,262 @@ func (m *Stop) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Stop: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Neighbors) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Neighbors: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Neighbors: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nodes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nodes = append(m.Nodes, &Node{})
+			if err := m.Nodes[len(m.Nodes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *StopRemoteNode) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: StopRemoteNode: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: StopRemoteNode: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Node", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Node == nil {
+				m.Node = &Node{}
+			}
+			if err := m.Node.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConnectNode) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConnectNode: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConnectNode: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Node", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Node == nil {
+				m.Node = &Node{}
+			}
+			if err := m.Node.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMessage(dAtA[iNdEx:])

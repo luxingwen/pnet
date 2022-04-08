@@ -117,6 +117,115 @@ func (ln *LocalNode) NewExchangeNodeReply(replyToID []byte) (*protos.Message, er
 	return msg, nil
 }
 
+func (ln *LocalNode) NewGetNeighborsMessage(destId string) (msg *protos.Message) {
+	msg = &protos.Message{
+		MessageType: protos.GET_NEIGHBORS,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		DestId:      destId,
+		SrcId:       ln.GetId(),
+	}
+
+	return
+}
+
+func (ln *LocalNode) NewNeighborsMessage(replyToID []byte, destid string) (msg *protos.Message, err error) {
+	ns, err := ln.GetNeighbors(nil)
+	if err != nil {
+		return
+	}
+	nodes := make([]*protos.Node, 0)
+	for _, item := range ns {
+		nodes = append(nodes, item.Node.Node)
+	}
+
+	msgBody := &protos.Neighbors{
+		Nodes: nodes,
+	}
+
+	buf, err := proto.Marshal(msgBody)
+	if err != nil {
+		return
+	}
+	msg = &protos.Message{
+		MessageType: protos.BYTES,
+		RoutingType: protos.RELAY,
+		ReplyToId:   replyToID,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     buf,
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+
+}
+
+func (ln *LocalNode) NewConnnetNodeMessage(destid string, remoteNode *protos.Node) (msg *protos.Message, err error) {
+	msgBody := &protos.ConnectNode{
+		Node: remoteNode,
+	}
+
+	buf, err := proto.Marshal(msgBody)
+	if err != nil {
+		return
+	}
+	msg = &protos.Message{
+		MessageType: protos.CONNECT_NODE,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     buf,
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+}
+
+func (ln *LocalNode) NewConnnetNodeReplayMessage(replyToID []byte, content []byte, destid string) (msg *protos.Message, err error) {
+	msg = &protos.Message{
+		MessageType: protos.BYTES,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     content,
+		ReplyToId:   replyToID,
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+}
+
+func (ln *LocalNode) NewStopConnnetNodeMessage(destid string, remoteNode *protos.Node) (msg *protos.Message, err error) {
+	msgBody := &protos.StopRemoteNode{
+		Node: remoteNode,
+	}
+
+	buf, err := proto.Marshal(msgBody)
+	if err != nil {
+		return
+	}
+	msg = &protos.Message{
+		MessageType: protos.STOP_REMOTENODE,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     buf,
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+}
+
+func (ln *LocalNode) NewRelayReplayMessage(replyToID []byte, content []byte, destid string) (msg *protos.Message, err error) {
+	msg = &protos.Message{
+		MessageType: protos.BYTES,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     content,
+		ReplyToId:   replyToID,
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+}
+
 type RemoteMessage struct {
 	RemoteNode *RemoteNode
 	Msg        *protos.Message
@@ -188,6 +297,64 @@ func (ln *LocalNode) handleRemoteMessage(remoteMsg *RemoteMessage) error {
 			if !shouldCallNextMiddleware {
 				break
 			}
+		}
+
+	case protos.GET_NEIGHBORS:
+		msg, err := ln.NewNeighborsMessage(remoteMsg.Msg.MessageId, remoteMsg.Msg.SrcId)
+		if err != nil {
+			return err
+		}
+		err = remoteMsg.RemoteNode.SendMessageAsync(msg)
+		if err != nil {
+			return err
+		}
+
+	case protos.CONNECT_NODE:
+		cnode := &protos.ConnectNode{}
+		err := proto.Unmarshal(remoteMsg.Msg.Message, cnode)
+		if err != nil {
+			return err
+		}
+
+		rmsg := "OK"
+		_, _, err = ln.Connect(cnode.Node)
+		if err != nil {
+			rmsg = "Err:" + err.Error()
+
+		}
+
+		msg, err := ln.NewConnnetNodeReplayMessage(remoteMsg.Msg.MessageId, []byte(rmsg), remoteMsg.Msg.SrcId)
+		if err != nil {
+			return err
+		}
+		err = remoteMsg.RemoteNode.SendMessageAsync(msg)
+		if err != nil {
+			return err
+		}
+
+	case protos.STOP_REMOTENODE:
+		cnode := &protos.StopRemoteNode{}
+		err := proto.Unmarshal(remoteMsg.Msg.Message, cnode)
+		if err != nil {
+			return err
+		}
+
+		rm, err := ln.GetNeighbors(nil)
+		if err != nil {
+			return err
+		}
+		v, ok := rm[cnode.Node.Id]
+		if ok {
+			v.Stop(errors.New("STOP_REMOTENODE"))
+		}
+
+		msg, err := ln.NewRelayReplayMessage(remoteMsg.Msg.MessageId, []byte("OK"), remoteMsg.Msg.SrcId)
+		if err != nil {
+			return err
+		}
+		err = remoteMsg.RemoteNode.SendMessageAsync(msg)
+		if err != nil {
+			return err
 		}
 
 	default:
