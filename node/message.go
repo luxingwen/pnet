@@ -1,9 +1,11 @@
 package node
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/luxingwen/pnet/protos"
+	"github.com/luxingwen/pnet/stat"
 
 	"github.com/luxingwen/pnet/log"
 
@@ -226,6 +228,38 @@ func (ln *LocalNode) NewRelayReplayMessage(replyToID []byte, content []byte, des
 	return
 }
 
+func (ln *LocalNode) NewNodeStatMessage(destid string) (msg *protos.Message) {
+	msg = &protos.Message{
+		MessageType: protos.NODE_STAT,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+	}
+	return
+}
+
+func (ln *LocalNode) NewNodeStatReplayMessage(replyToID []byte, destid string) (msg *protos.Message, err error) {
+
+	nodestat := stat.GetNodeStat()
+	nodestat.PeerId = ln.GetId()
+	b, err := json.Marshal(nodestat)
+	if err != nil {
+		return
+	}
+
+	msg = &protos.Message{
+		MessageType: protos.BYTES,
+		RoutingType: protos.RELAY,
+		MessageId:   []byte(uuid.New().String()),
+		SrcId:       ln.GetId(),
+		DestId:      destid,
+		ReplyToId:   replyToID,
+		Message:     b,
+	}
+	return
+}
+
 type RemoteMessage struct {
 	RemoteNode *RemoteNode
 	Msg        *protos.Message
@@ -352,6 +386,17 @@ func (ln *LocalNode) handleRemoteMessage(remoteMsg *RemoteMessage) error {
 		if err != nil {
 			return err
 		}
+		err = remoteMsg.RemoteNode.SendMessageAsync(msg)
+		if err != nil {
+			return err
+		}
+
+	case protos.NODE_STAT:
+		msg, err := ln.NewNodeStatReplayMessage(remoteMsg.Msg.MessageId, remoteMsg.Msg.SrcId)
+		if err != nil {
+			return err
+		}
+
 		err = remoteMsg.RemoteNode.SendMessageAsync(msg)
 		if err != nil {
 			return err

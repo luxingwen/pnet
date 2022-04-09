@@ -10,5 +10,6 @@ require (
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.0.0-20190227000051-27936f6d90f9 // indirect
+	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/xtaci/smux v1.2.11
 )

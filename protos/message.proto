@@ -35,9 +35,11 @@ enum MessageType {
 
   GET_NEIGHBORS = 4;  // 获取邻边节点信息
   
-  CONNECT_NODE = 6; // 连接到远程节点
+  CONNECT_NODE = 5; // 连接到远程节点
 
-  STOP_REMOTENODE = 7;
+  STOP_REMOTENODE = 6;
+
+  NODE_STAT = 7;
 
 }
 

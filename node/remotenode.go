@@ -127,9 +127,6 @@ func (rn *RemoteNode) setNode(n *protos.Node) error {
 			}
 		}
 
-		if rn.Addr != n.Addr {
-			return fmt.Errorf("Node addr %s is different from expected value %s", n.Addr, rn.Addr)
-		}
 	}
 
 	if !proto.Equal(rn.Node.Node, n) {
