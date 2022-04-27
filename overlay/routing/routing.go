@@ -92,6 +92,8 @@ func (r *Routing) SendMessage(router Router, remoteMsg *node.RemoteMessage, hasR
 		success = true
 	}
 
+	//	fmt.Println("remotenodes:", remoteNodes)
+
 	var replyChan <-chan *node.RemoteMessage
 	errs := utils.NewErrors()
 

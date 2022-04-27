@@ -148,7 +148,7 @@ func (ln *LocalNode) handleMsg() {
 
 		err = ln.handleRemoteMessage(remoteMsg)
 		if err != nil {
-			log.Errorf("Handle remote message error: %v", err)
+			log.Errorf("%s Handle remote message error: %v  msg:%s", ln.GetId(), err, string(remoteMsg.Msg.Message))
 			continue
 		}
 
@@ -256,15 +256,11 @@ func (ln *LocalNode) AddToRxCache(msgID []byte) (bool, error) {
 
 	err := ln.rxMsgCache.Add(msgID, struct{}{})
 	if err != nil {
-		//	fmt.Println("----222")
 		if _, found := ln.rxMsgCache.Get(msgID); found {
-			//	fmt.Println("----3333")
 			return false, nil
 		}
 		return false, err
 	}
-
-	//fmt.Println("-----222, :", string(msgID))
 	return true, nil
 }
 

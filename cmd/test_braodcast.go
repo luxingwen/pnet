@@ -28,8 +28,8 @@ func newPnet(id string, name string, port uint16) *pnet.PNet {
 	}, 0})
 
 	pn.ApplyMiddleware(node.BytesReceived{func(msg, msgID []byte, srcID, rpath string, remoteNode *node.RemoteNode) ([]byte, bool) {
-		log.Infof("Receive message \"%s\" from %s by %s , path: %s ", string(msg), srcID, remoteNode.Id, rpath)
-		//pn.SendBytesRelayReply(msgID, []byte("receive send res:"+rpath), srcID)
+		log.Infof("%s Receive message \"%s\" from %s by %s , path: %s ", pn.GetLocalNode().Id, string(msg), srcID, remoteNode.Id, rpath)
+		pn.SendBytesRelayReply(msgID, []byte("receive send res:"+rpath), srcID)
 		return nil, true
 	}, 0})
 
@@ -67,12 +67,14 @@ func main() {
 	time.Sleep(time.Second * 3)
 
 	for {
-		reply, _, err := p2.SendMessageSync(p2.GetLocalNode().NewNodeStatMessage(p6.GetLocalNode().GetId()), protos.RELAY, 0)
+		ok, err := p2.SendMessageAsync(p2.GetLocalNode().NewBraodcastMessage([]byte("你好")), protos.BROADCAST)
 		if err != nil {
 			fmt.Println("err:", err)
 			return
 		}
-		_ = reply
+		fmt.Println("ok:", ok)
+		time.Sleep(time.Second * 3)
+		//_ = reply
 		//fmt.Println(string(reply.Message))
 
 	}

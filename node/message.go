@@ -260,6 +260,24 @@ func (ln *LocalNode) NewNodeStatReplayMessage(replyToID []byte, destid string) (
 	return
 }
 
+func (ln *LocalNode) NewBraodcastMessage(data []byte) (msg *protos.Message) {
+	b := &protos.Bytes{
+		Data: data,
+	}
+	buf, err := proto.Marshal(b)
+	if err != nil {
+		return
+	}
+	msg = &protos.Message{
+		MessageType: protos.BYTES,
+		RoutingType: protos.BROADCAST,
+		MessageId:   []byte(uuid.New().String()),
+		Message:     buf,
+		SrcId:       ln.GetId(),
+	}
+	return
+}
+
 type RemoteMessage struct {
 	RemoteNode *RemoteNode
 	Msg        *protos.Message
@@ -327,6 +345,9 @@ func (ln *LocalNode) handleRemoteMessage(remoteMsg *RemoteMessage) error {
 		data := msgBody.Data
 		var shouldCallNextMiddleware bool
 		for _, mw := range ln.middlewareStore.bytesReceived {
+			if remoteMsg.RemoteNode == nil && remoteMsg.Msg.SrcId == ln.GetId() {
+				remoteMsg.RemoteNode = &RemoteNode{Node: ln.Node}
+			}
 			data, shouldCallNextMiddleware = mw.Func(data, remoteMsg.Msg.MessageId, remoteMsg.Msg.SrcId, remoteMsg.Msg.Path, remoteMsg.RemoteNode)
 			if !shouldCallNextMiddleware {
 				break

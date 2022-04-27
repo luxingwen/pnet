@@ -60,7 +60,7 @@ func DefaultConfig() *Config {
 		LocalHandleMsgWorkers: 1,
 
 		LocalRxMsgCacheExpiration:      300 * time.Second,
-		LocalRxMsgCacheCleanupInterval: 10 * time.Second,
+		LocalRxMsgCacheCleanupInterval: 5 * time.Minute,
 		OverlayLocalMsgChanLen:         2333,
 		LocalHandleMsgChanLen:          2333,
 

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	RelayRoutingNumWorkers = 1
+	BraodCastRoutingNumWorkers = 1
 )
 
 type RelayRouting struct {
@@ -31,7 +31,7 @@ func NewRelayRouting(localMsgChan chan<- *node.RemoteMessage, rxMsgChan <-chan *
 }
 
 func (rlx *RelayRouting) Start() error {
-	return rlx.Routing.Start(rlx, RelayRoutingNumWorkers)
+	return rlx.Routing.Start(rlx, BraodCastRoutingNumWorkers)
 }
 
 func (rlx *RelayRouting) GetNodeToRoute(remoteMsg *node.RemoteMessage) (*node.LocalNode, []*node.RemoteNode, error) {

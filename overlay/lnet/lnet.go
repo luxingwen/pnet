@@ -55,6 +55,22 @@ func NewLNet(localNode *node.LocalNode) (*LNet, error) {
 		return nil, err
 	}
 
+	braodcastRxMsgChan, err := localNode.GetRxMsgChan(protos.BROADCAST)
+	if err != nil {
+		return nil, err
+	}
+
+	broadcastRouting, err := NewBroadcastRouting(ovl.LocalMsgChan, braodcastRxMsgChan, ln)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = ovl.AddRouter(protos.BROADCAST, broadcastRouting)
+	if err != nil {
+		return nil, err
+	}
+
 	return ln, nil
 }
 

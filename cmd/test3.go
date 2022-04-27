@@ -29,7 +29,7 @@ func newPnet(id string, name string, port uint16) *pnet.PNet {
 
 	pn.ApplyMiddleware(node.BytesReceived{func(msg, msgID []byte, srcID, rpath string, remoteNode *node.RemoteNode) ([]byte, bool) {
 		log.Infof("Receive message \"%s\" from %s by %s , path: %s ", string(msg), srcID, remoteNode.Id, rpath)
-		//pn.SendBytesRelayReply(msgID, []byte("receive send res:"+rpath), srcID)
+		pn.SendBytesRelayReply(msgID, []byte("receive send res:"+rpath), srcID)
 		return nil, true
 	}, 0})
 
@@ -51,30 +51,14 @@ func newPnet(id string, name string, port uint16) *pnet.PNet {
 func main() {
 	hostname := "127.0.0.1"
 
-	p1 := newPnet("p1", hostname, 50001)
-	p2 := newPnet("p2", hostname, 50002)
-	p3 := newPnet("p3", hostname, 50003)
-	p4 := newPnet("p4", hostname, 50004)
-	p5 := newPnet("p5", hostname, 50005)
-	p6 := newPnet("p6", hostname, 50006)
+	p1 := newPnet("p1", hostname, 50011)
 
-	p2.Join(p1.GetLocalNode().Addr)
-	p3.Join(p2.GetLocalNode().Addr)
-	p4.Join(p3.GetLocalNode().Addr)
-	p5.Join(p4.GetLocalNode().Addr)
-	p6.Join(p5.GetLocalNode().Addr)
-
-	time.Sleep(time.Second * 3)
-
-	for {
-		reply, _, err := p2.SendMessageSync(p2.GetLocalNode().NewNodeStatMessage(p6.GetLocalNode().GetId()), protos.RELAY, 0)
-		if err != nil {
-			fmt.Println("err:", err)
-			return
-		}
-		_ = reply
-		//fmt.Println(string(reply.Message))
-
+	reply, _, err := p1.SendMessageSync(p1.GetLocalNode().NewNodeStatMessage(p1.GetLocalNode().GetId()), protos.RELAY, 0)
+	if err != nil {
+		fmt.Println("err:", err)
+		return
 	}
+
+	fmt.Println(string(reply.Message))
 
 }
